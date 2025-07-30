@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       jam: waktu.split(',')[1].trim(),
     };
 
-    const webhookUrl = 'https://script.google.com/macros/s/AKfyc.../exec'; // Ganti dengan milikmu
+    const webhookUrl = 'https://script.google.com/macros/s/AKfycbx4iW_Irrufb0QLcY5-oeleoOYWuOrGlQyx2ToRg9tH-AVdNdIvlH26cuhZemc7Zmpu_A/exec'; // Ganti dengan milikmu
 
     try {
       const response = await fetch(webhookUrl, {

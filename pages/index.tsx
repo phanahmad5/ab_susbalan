@@ -10,7 +10,7 @@ export default function Home() {
 
   const json = JSON.stringify({ nama, utusan, pelatihan });
   const encoded = encodeURIComponent(json);
-  const url = `https://absensi.vercel.app/scan?data=${encoded}`; // Ganti URL dengan domain kamu
+  const url = `https://ab-susbalan.vercel.app/scan?data=${encoded}`; // Ganti URL dengan domain kamu
 
   return (
     <div style={{ padding: 20 }}>

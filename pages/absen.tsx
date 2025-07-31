@@ -22,16 +22,14 @@ export default function AbsenPage() {
         .then(res => res.json())
         .then(data => {
           if (data.message === 'Sukses') {
-            setStatus('Absen berhasil!');
+            setStatus(`✅ Anda berhasil absen atas nama ${nama}`);
           } else {
-            setStatus('Gagal: ' + data.message);
+            setStatus('❌ Gagal: ' + data.message);
           }
         })
         .catch(() => {
-          setStatus('Terjadi kesalahan saat mengirim data.');
+          setStatus('❌ Terjadi kesalahan saat mengirim data.');
         });
-    } else {
-      setStatus('Data tidak lengkap!');
     }
   }, [nama, utusan, pelatihan]);
 
@@ -41,7 +39,7 @@ export default function AbsenPage() {
       <p><strong>Nama:</strong> {nama}</p>
       <p><strong>Utusan:</strong> {utusan}</p>
       <p><strong>Pelatihan:</strong> {pelatihan}</p>
-      <p>Status: {status}</p>
+      <p><strong>Status:</strong> {status}</p>
     </div>
   );
 }

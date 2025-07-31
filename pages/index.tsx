@@ -1,94 +1,71 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useState } from 'react';
 import QRCode from 'react-qr-code';
-import DataTable from 'react-data-table-component';
 
-export default function DaftarSiswa() {
-  const [data, setData] = useState<any[]>([]);
+export default function Home() {
+  const [nama, setNama] = useState('');
+  const [utusan, setUtusan] = useState('');
+  const [pelatihan, setPelatihan] = useState('');
+  const [showQR, setShowQR] = useState(false);
 
-  useEffect(() => {
-    fetch('/api/siswa')
-      .then((res) => res.json())
-      .then(setData);
-  }, []);
+  const BASE_URL = 'https://ab-susbalan.vercel.app';
 
-  const columns = [
-    {
-      name: 'Nama',
-      selector: (row: any) => row.nama,
-      sortable: true,
-    },
-    {
-      name: 'Utusan',
-      selector: (row: any) => row.utusan,
-      sortable: true,
-    },
-    {
-      name: 'Pelatihan',
-      selector: (row: any) => row.pelatihan,
-      sortable: true,
-    },
-    {
-      name: 'QR Code',
-      cell: (row: any) => {
-        const json = JSON.stringify({
-          nama: row.nama,
-          utusan: row.utusan,
-          pelatihan: row.pelatihan,
-        });
-        const encoded = encodeURIComponent(json);
-        const qrUrl = `https://ab-susbalan.vercel.app/scan?data=${encoded}`;
-        return <QRCode value={qrUrl} size={60} />;
-      },
-    },
-    {
-      name: 'Aksi',
-      cell: (row: any) => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          <Link href={`/detail?id=${row.id}`}>
-            <button style={buttonStyle}>Detail</button>
-          </Link>
-          <Link href={`/hapus?id=${row.id}`}>
-            <button style={{ ...buttonStyle, backgroundColor: '#e11d48' }}>Hapus</button>
-          </Link>
-        </div>
-      ),
-    },
-  ];
+  const generateURL = () => {
+    return `/absen?nama=${encodeURIComponent(nama)}&utusan=${encodeURIComponent(utusan)}&pelatihan=${encodeURIComponent(pelatihan)}`;
+  };
+
+  const handleGenerate = () => {
+    if (!nama || !utusan || !pelatihan) {
+      alert('Harap lengkapi semua data!');
+      return;
+    }
+    setShowQR(true);
+  };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Daftar Siswa</h1>
-        <Link href="/tambah">
-          <button style={buttonStyle}>+ Tambah Siswa</button>
-        </Link>
-      </div>
+    <div className="p-6 max-w-xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">QR Absensi Generator</h1>
 
-      {data.length === 0 ? (
-        <p>Belum ada data siswa.</p>
-      ) : (
-        <DataTable
-          columns={columns}
-          data={data}
-          pagination
-          highlightOnHover
-          striped
-          responsive
-        />
+      <input
+        type="text"
+        placeholder="Nama"
+        value={nama}
+        onChange={(e) => setNama(e.target.value)}
+        className="border w-full p-2 mb-2 rounded"
+      />
+      <input
+        type="text"
+        placeholder="Utusan"
+        value={utusan}
+        onChange={(e) => setUtusan(e.target.value)}
+        className="border w-full p-2 mb-2 rounded"
+      />
+      <select
+        value={pelatihan}
+        onChange={(e) => setPelatihan(e.target.value)}
+        className="border w-full p-2 mb-4 rounded"
+      >
+        <option value="">Pilih Pelatihan</option>
+        <option value="Susbalan">Susbalan</option>
+        <option value="PKL">PKL</option>
+      </select>
+
+      <button
+        onClick={handleGenerate}
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        Generate QR
+      </button>
+
+      {showQR && (
+        <div className="mt-6 text-center">
+          <QRCode value={BASE_URL + generateURL()} />
+          <p className="mt-2 text-sm text-gray-500 break-all">
+            {BASE_URL + generateURL()}
+          </p>
+        </div>
       )}
     </div>
   );
 }
-
-const buttonStyle: React.CSSProperties = {
-  padding: '0.5rem 1rem',
-  fontSize: '0.9rem',
-  borderRadius: '6px',
-  border: 'none',
-  cursor: 'pointer',
-  backgroundColor: '#4f46e5',
-  color: '#fff',
-};
